@@ -111,6 +111,7 @@
         <option value="$PROJECT_DIR$/dashboard/templates/dashboard/500.html" />
         <option value="$PROJECT_DIR$/money/settings.py" />
         <option value="$PROJECT_DIR$/dashboard/static/dashboard/css/AdminLTE.css" />
+        <option value="$PROJECT_DIR$/dashboard/static/dashboard/css/AdminLTE.min.css" />
       </list>
     </option>
   </component>
@@ -745,6 +746,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="561">
           <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dashboard/static/dashboard/css/AdminLTE.min.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="6" column="572" selection-start-line="6" selection-start-column="572" selection-end-line="6" selection-end-column="572" />
           <folding />
         </state>
       </provider>
