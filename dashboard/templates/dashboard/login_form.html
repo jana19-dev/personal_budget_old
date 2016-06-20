@@ -1,0 +1,98 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	    <!-- Google Fonts -->
+	    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet' type='text/css'>
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="{% static 'dashboard/css/animate.css' %}">
+        <!-- Custom Stylesheet -->
+        <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
+
+        <!-- jQuery 2.2.0 -->
+        <script src="{% static 'dashboard/plugins/jQuery/jQuery-2.2.0.min.js' %}"></script>
+
+        <style>
+            body{
+                background: url("{% static 'dashboard/images/photo_bg.jpg' %}") no-repeat center center fixed;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="container">
+<iframe src="http://free.timeanddate.com/clock/i58w4p68/n250/fn10/fs20/fcfff/tct/pct/tt0/tw1/tm1/th2/ta1" align="middle" frameborder="0" width="100%" height="24" allowTransparency="true"></iframe>
+            <div class="top">
+			    <h1 id="title" class="hidden"><span id="logo">Welcome<br/></span></h1>
+
+		    </div>
+
+            <div class="login-box animated fadeInUp">
+                <div class="box-header">
+                    <h2>Log In</h2>
+                </div>
+
+                <form action="" method="post" id="loginForm">
+
+                    {% csrf_token %}
+
+                    {% if form.errors %}
+
+                        <div class="alert alert-danger alert-dismissible">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <i class="icon fa fa-warning text-danger"></i>{{ error|escape }}
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                    <i class="icon fa fa-warning  text-danger"></i>{{ error|escape }}
+                            {% endfor %}
+                        </div>
+                    <br/>
+                    {% endif %}
+
+                    <label for="id_username">Username</label>
+                    <br/>
+                    {{ form.username }}
+                    <br/>
+
+                    <label for="id_password">Password</label>
+                    <br/>
+                    {{ form.password }}
+                    <br/>
+
+                    <button type="submit"  value='Login' name="Login" title="Login">Sign In</button>
+
+                </form>
+            </div>
+        </div>
+
+    </body>
+
+    <script>
+        $(document).ready(function () {
+            $('#logo').addClass('animated fadeInDown');
+            $("input:text:visible:first").focus();
+        });
+        $('#username').focus(function() {
+            $('label[for="username"]').addClass('selected');
+        });
+        $('#username').blur(function() {
+            $('label[for="username"]').removeClass('selected');
+        });
+        $('#password').focus(function() {
+            $('label[for="password"]').addClass('selected');
+        });
+        $('#password').blur(function() {
+            $('label[for="password"]').removeClass('selected');
+        });
+    </script>
+
+</html>
+

@@ -1,0 +1,125 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+
+{% block title %} Accounts {% endblock %}
+
+{% block accounts_active %}active{% endblock %}
+
+{% block accounts-sidebar %}
+    {% include 'dashboard/accounts_sidebar.html' %}
+{% endblock %}
+
+{% block page-content %}
+
+<div class="row">
+
+    <div class="col-lg-8 col-lg-offset-2">
+
+        <div class="alert alert-danger alert-dismissible hidden" id="acc_errors">
+            <i class="icon fa fa-ban"></i><span id="acc_err_msg"> </span>
+        </div>
+        <div class="alert alert-success alert-dismissible hidden" id="acc_success">
+            <i class="icon fa fa-check"></i><span id="acc_suc_msg"> </span>
+        </div>
+
+        {% include 'dashboard/add_account.html' %}
+        <br><br><br><br>
+
+        <div class="box box-info">
+            <div class="box-body">
+                <table id="editAccount" class="table table-hover table-condensed table-bordered">
+                     <thead>
+                        <tr>
+                            <th>#</th>
+                            <th style="text-align: center" width="30%">Account Name</th>
+                            <th style="text-align: center" width="25%">Account Type</th>
+                            <th style="text-align: center" width="20%">Opening Balance Date</th>
+                            <th style="text-align: center" width="15%">Opening Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in ALL_ACCOUNTS %}
+                           <tr>
+                               <td>{{ account.pk }}</td>
+                               <td style="text-align: left; vertical-align: middle;" width="30%">{{ account.acc_name }}</td>
+                               <td style="text-align: left; vertical-align: middle;" width="25%">{{ account.acc_type }}</td>
+                               <td style="text-align: center; vertical-align: middle;" width="20%">{{ account.print_date }}</td>
+                               {% if account.acc_open_balance >= 0 %}
+                                <td style="text-align: right; vertical-align: middle;" width="15%" class="text-bold text-green">{{ account.acc_open_balance|intcomma }}</td>
+                               {% else %}
+                                <td style="text-align: right; vertical-align: middle;" width="15%" class="text-bold text-red">{{ account.acc_open_balance|intcomma }}</td>
+                               {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block datepicker-content %}
+
+    <script >
+        //Date picker
+        $("#datepicker").datepicker( {
+            autoclose: true
+        });
+    </script>
+
+ {% endblock %}
+
+
+{% block table-edit-content %}
+    <script>
+
+
+
+        $('#editAccount').Tabledit({
+            url: 'edit_account/',
+            editButton: false,
+            hideIdentifier: true,
+            restoreButton: false,
+            deleteButton: true,
+            columns: {
+                identifier: [0, 'id'],
+                editable: [[1, 'acc_name'],
+                    [2, 'acc_type', '{"Checking":"Checking", "Savings":"Savings", "Credit Card":"Credit Card", "Cash":"Cash", "Line of Credit":"Line of Credit", "Loans":"Loans"}'],
+                    [3, 'acc_date_open'],
+                    [4, 'acc_open_balance']],
+            },
+            buttons: {
+                delete: {
+                    class: 'btn btn-sm btn-danger',
+                    html: '<span class="glyphicon glyphicon-trash"></span>',
+                    action: 'delete'
+                },
+                confirm: {
+                    class: 'btn btn-sm btn-info',
+                    html: 'Are you sure?'
+                }
+            },
+            onSuccess: function(data) {
+                if (data['nothing']){
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#tran_errors').addClass('hidden');
+                    }
+                else {
+                    if (data['error']) {
+                        $('#'+data['id']).addClass('danger').addClass('text-danger');
+                        $('#acc_errors').removeClass('hidden');
+                        $('#acc_err_msg').text(data['error']);
+                    } else {
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#acc_errors').addClass('hidden');
+                        window.location.replace('/accounts/');
+                    }
+                }
+            },
+        });
+    </script>
+{% endblock %}

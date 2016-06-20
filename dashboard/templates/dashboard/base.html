@@ -1,0 +1,188 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="{% static 'dashboard/bootstrap/css/bootstrap.min.css' %}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- bootstrap datepicker -->
+    <link rel="stylesheet" href="{% static 'dashboard/plugins/datepicker/datepicker3.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard/plugins/datepicker/datepicker.css' %}">
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'dashboard/plugins/daterangepicker/daterangepicker-bs3.css' %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard/css/AdminLTE.min.css' %}"/>
+    <!-- Skin Colour -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/skins/skin-purple.min.css' %}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Hind+Guntur|Tillana" rel="stylesheet">
+
+    <!-- Sidebar Header Font -->
+    <style>.main-header .logo-lg{font-family: 'Tillana', cursive; }</style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Removing the number wheel up down arrows -->
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {-webkit-appearance: none; margin: 0;}
+        input[type=number] {-moz-appearance: textfield;}
+    </style>
+
+
+
+</head>
+
+
+
+<body class="hold-transition skin-purple sidebar-mini fixed">
+
+    <div class="wrapper">
+        <!-- Main Header -->
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="{% url 'dashboard:index' %}" class="logo">
+                <span class="logo-lg"><i class="fa fa-tachometer"></i><b> DASHBOARD</b>  </span>
+            </a>
+
+            <!-- Header Navbar -->
+            <nav class="navbar" role="navigation">
+                <!-- Navbar Left Menu -->
+                <div class="navbar-custom-menu navbar-left">
+                    <ul class="nav navbar-nav">
+                        <li class="{% block transactions_active %}{% endblock %}">
+                            <a href="{% url 'dashboard:index' %}"><i class="fa fa-database"></i>&nbsp; Transactions</a>
+                        </li>
+                        <li class="{% block budget_active %}{% endblock %}">
+                            <a href="{% url 'dashboard:budget' %}"><i class="fa fa-usd"></i>&nbsp; Budget</a>
+                        </li>
+                        <li class="{% block reports_active %}{% endblock %}">
+                            <a href="{% url 'dashboard:reports' %}"><i class="fa fa-line-chart"></i>&nbsp; Reports</a>
+                        </li>
+                        <li class="{% block accounts_active %}{% endblock %}">
+                            <a href="{% url 'dashboard:accounts' %}"><i class="fa fa-university"></i>&nbsp; Accounts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        </li>
+
+                    </ul>
+                </div>
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu navbar-right">
+                    <ul class="nav navbar-nav">
+                        <li class="">
+                            <a href="{% url 'dashboard:logout' %}"><i class="fa fa-sign-out"></i>&nbsp;Log out&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar" style="background-color: #000000">
+            {% block accounts-sidebar %} {% endblock %}
+        </aside>
+
+
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <section class="content">
+                <!-- Your Page Content Here -->
+                {% block page-content %} {% endblock %}
+            </section>
+        </div>
+        <!-- /.content-wrapper -->
+
+    </div>
+    <!-- / wrapper -->
+
+
+    <!-- jQuery 2.2.0 -->
+    <script src="{% static 'dashboard/plugins/jQuery/jQuery-2.2.0.min.js' %}"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="{% static 'dashboard/bootstrap/js/bootstrap.min.js' %}"></script>
+    <!-- bootstrap datepicker -->
+    <script src="{% static 'dashboard/plugins/datepicker/bootstrap-datepicker.js' %}"></script>
+    <!-- date-range-picker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="{% static 'dashboard/plugins/daterangepicker/daterangepicker.js' %}"></script>
+    <!-- AdminLTE App -->
+    <script src="{% static 'dashboard/js/app.min.js' %}"></script>
+    <!-- FastClick -->
+    <script src="{% static 'dashboard/plugins/fastclick/fastclick.min.js' %}"></script>
+    <!-- SlimScroll -->
+    <script src="{% static 'dashboard/plugins/slimScroll/jquery.slimscroll.min.js' %}"></script>
+    <!-- table-edit -->
+    <script src="{% static 'dashboard/plugins/jquery-tabledit-1.2.3/jquery.tabledit.min.js' %}"></script>
+    <!-- csrf -->
+    <script type="text/javascript" src="{% static 'dashboard/bootstrap/js/csrf.js' %}"></script>
+    <!-- ChartJS 1.0.1 -->
+    <script src="{% static 'dashboard/plugins/chartjs/Chart.min.js' %}"></script>
+
+
+    {% block datepicker-content %} {% endblock %}
+
+    <script >
+        function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    </script>
+
+    {% block table-edit-content %} {% endblock %}
+
+    <script>
+        var IDLE_TIMEOUT = 600; //seconds: 10 minutes
+        var _idleSecondsCounter = 0;
+
+        document.onclick = function () {
+            _idleSecondsCounter = 0;
+        };
+
+        document.onmousemove = function () {
+            _idleSecondsCounter = 0;
+        };
+
+        document.onkeypress = function () {
+            _idleSecondsCounter = 0;
+        };
+
+        window.setInterval(CheckIdleTime, 1000);
+
+        function CheckIdleTime() {
+            _idleSecondsCounter++;
+            var oPanel = document.getElementById("SecondsUntilExpire");
+            if (oPanel)
+                oPanel.innerHTML = (IDLE_TIMEOUT - _idleSecondsCounter) + "";
+            if (_idleSecondsCounter >= IDLE_TIMEOUT) {
+                document.location.href = "{% url 'dashboard:logout' %}";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

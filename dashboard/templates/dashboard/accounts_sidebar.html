@@ -1,0 +1,163 @@
+{% load humanize %}
+
+<section class="sidebar">
+
+
+        <!-- Sidebar Menu -->
+        <ul class="sidebar-menu">
+
+        {% if CASH %}
+            <li class=" text-gray text-center" style="font-family:'Tillana', cursive;">CASH ACCOUNTS</li>
+            {% for account in CASH %}
+                {% if acc_name == account.acc_name %}
+                    <li class="active text-left">
+                {% else %}
+                    <li class="text-left">
+                {% endif %}
+                    <a href="{% url 'dashboard:filter_results' tran_range_for_budget account.acc_name cat_name%}">
+                        <span>
+                            <span class="text-white"> {{ account.acc_name }} </span>
+                            {% if account.acc_curr_balance >= 0 %}
+                                <span class="pull-right text-green text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% else %}
+                                <span class="pull-right text-red text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
+            {% endfor %}
+        {% endif %}
+
+
+        {% if CHECKING %}
+            <li class=" text-gray text-center" style="font-family:'Tillana', cursive;">CHECKING ACCOUNTS</li>
+            {% for account in CHECKING %}
+                {% if acc_name == account.acc_name %}
+                    <li class="active text-left">
+                {% else %}
+                    <li class="text-left">
+                {% endif %}
+                    <a href="{% url 'dashboard:filter_results' tran_range_for_budget account.acc_name cat_name %}">
+                        <span>
+                            <span class="text-white"> {{ account.acc_name }} </span>
+                            {% if account.acc_curr_balance >= 0 %}
+                                <span class="pull-right text-green text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% else %}
+                                <span class="pull-right text-red text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
+            {% endfor %}
+        {% endif %}
+
+
+        {% if SAVINGS %}
+            <li class=" text-gray text-center"  style="font-family:'Tillana', cursive;">SAVING ACCOUNTS</li>
+            {% for account in SAVINGS %}
+                {% if acc_name == account.acc_name %}
+                    <li class="active text-left">
+                {% else %}
+                    <li class="text-left">
+                {% endif %}
+                    <a href="{% url 'dashboard:filter_results' tran_range_for_budget account.acc_name cat_name %}">
+                        <span>
+                            <span class="text-white"> {{ account.acc_name }} </span>
+                            {% if account.acc_curr_balance >= 0 %}
+                                <span class="pull-right text-green text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% else %}
+                                <span class="pull-right text-red text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
+            {% endfor %}
+        {% endif %}
+
+
+        {% if CREDIT_CARD %}
+            <li class=" text-gray text-center" style="font-family:'Tillana', cursive;" >CREDIT CARDS</li>
+            {% for account in CREDIT_CARD %}
+                {% if acc_name == account.acc_name %}
+                    <li class="active text-left">
+                {% else %}
+                    <li class="text-left">
+                {% endif %}
+                    <a href="{% url 'dashboard:filter_results' tran_range_for_budget account.acc_name cat_name %}">
+                        <span>
+                            <span class="text-white"> {{ account.acc_name }} </span>
+                            {% if account.acc_curr_balance >= 0 %}
+                                <span class="pull-right text-green text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% else %}
+                                <span class="pull-right text-red text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
+            {% endfor %}
+        {% endif %}
+
+
+        {% if LINE_OF_CREDIT %}
+            <li class=" text-gray text-center"  style="font-family:'Tillana', cursive;">LINE OF CREDITS</li>
+            {% for account in LINE_OF_CREDIT %}
+                {% if acc_name == account.acc_name %}
+                    <li class="active text-left">
+                {% else %}
+                    <li class="text-left">
+                {% endif %}
+                    <a href="{% url 'dashboard:filter_results' tran_range_for_budget account.acc_name cat_name %}">
+                        <span>
+                            <span class="text-white"> {{ account.acc_name }} </span>
+                            {% if account.acc_curr_balance >= 0 %}
+                                <span class="pull-right text-green text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% else %}
+                                <span class="pull-right text-red text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
+            {% endfor %}
+        {% endif %}
+
+
+        {% if LOANS %}
+            <li class="text-gray text-center" style="font-family:'Tillana', cursive;">OTHER LOANS</li>
+            {% for account in LOANS %}
+                {% if acc_name == account.acc_name %}
+                    <li class="active text-left">
+                {% else %}
+                    <li class="text-left">
+                {% endif %}
+                    <a href="{% url 'dashboard:filter_results' tran_range_for_budget account.acc_name cat_name %}">
+                        <span>
+                            <span class="text-white"> {{ account.acc_name }} </span>
+                            {% if account.acc_curr_balance >= 0 %}
+                                <span class="pull-right text-green text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% else %}
+                                <span class="pull-right text-red text-bold"> $&nbsp; {{ account.acc_curr_balance|intcomma }} &nbsp;</span>
+                            {% endif %}
+                        </span>
+                    </a>
+                </li>
+            {% endfor %}
+        {% endif %}
+
+
+        <hr>
+        <h2>
+            <div class="row">
+                {% if NET_WORTH >= 0 %}
+                    <div class="col-xs-10 text-right col-xs-offset-1 label label-success"><strong>$&nbsp; {{ NET_WORTH|intcomma  }} </strong></div>
+                {% else %}
+                    <div class="col-xs-10 text-right col-xs-offset-1 label label-danger"><strong>$&nbsp; {{ NET_WORTH|intcomma  }} </strong></div>
+                {% endif %}
+            </div>
+        </h2>
+
+        </ul>
+
+
+
+    </section>
+

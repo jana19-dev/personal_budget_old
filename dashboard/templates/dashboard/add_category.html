@@ -1,0 +1,35 @@
+<form action="{% url 'dashboard:addCategory' %}" method="post" id="addCategoryForm" autocomplete="off">
+    {% csrf_token %}
+    <div class="form-group">
+
+        {% if cat_form.errors %}
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {% for field in cat_form %}
+                    {% for error in field.errors %}
+                        <i class="icon fa fa-warning"></i>{{ error|escape }}
+                    {% endfor %}
+                {% endfor %}
+                {% for error in cat_form.non_field_errors %}
+                    <i class="icon fa fa-warning"></i>{{ error|escape }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+
+
+
+        <div class='col-lg-10'>
+            <label>Add a new Category</label>
+            {{ cat_form.cat_name }}
+        </div>
+
+        <div class='col-lg-1 '>
+            <label>&nbsp;</label><br>
+            <button type="submit" class="btn btn-info" value='CategoryAdd' name="CategoryAdd" title="Add New Category"><i class="fa fa-plus"></i></button>
+        </div>
+
+
+
+    </div>
+</form>

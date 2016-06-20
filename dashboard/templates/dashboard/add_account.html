@@ -1,0 +1,52 @@
+<form action="" method="post" id="addAccountForm" autocomplete="off">
+    {% csrf_token %}
+    <div class="form-group">
+
+        {% if acc_form.errors %}
+
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {% for field in acc_form %}
+                    {% for error in field.errors %}
+                        <i class="icon fa fa-warning"></i>{{ error|escape }}
+                    {% endfor %}
+                {% endfor %}
+                {% for error in acc_form.non_field_errors %}
+                    <i class="icon fa fa-warning"></i>{{ error|escape }}
+                {% endfor %}
+            </div>
+
+        {% endif %}
+
+
+        <div class='col-lg-3'>
+            <label>Account Name</label>
+            {{ acc_form.acc_name }}
+        </div>
+
+        <div class='col-lg-3'>
+            <label>Account Type</label>
+            {{ acc_form.acc_type }}
+        </div>
+
+        <div class='col-lg-3'>
+            <label>Opening Balance Date</label>
+            <div class="input-group date"> <div class="input-group-addon"> <i class="fa fa-calendar"></i> </div>
+                {{ acc_form.acc_date_open }}
+            </div>
+        </div>
+
+        <div class='col-lg-2'>
+            <label>Opening Balance</label>
+            {{ acc_form.acc_open_balance }}
+        </div>
+
+        <div class='col-lg-1 '>
+            <label>&nbsp;</label><br>
+            <button type="submit" class="btn btn-success" value='addAccount' name="addAccount" title="Add New Account"><i class="fa fa-plus"></i></button>
+        </div>
+
+
+    </div>
+</form>
+

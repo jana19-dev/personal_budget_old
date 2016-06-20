@@ -1,0 +1,115 @@
+{% if all_view %}
+    <form action="{% url 'dashboard:add_transaction' %}" method="post" id="addTransactionForm" autocomplete="off">
+{% else %}
+    <form action="{% url 'dashboard:add_pre_transaction' acc_name %}" method="post" id="addTransactionForm" autocomplete="off">
+{% endif %}
+
+    {% csrf_token %}
+    <div class="form-group">
+
+        {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                       <i class="icon fa fa-warning"></i> {{ error|escape }}
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                   <i class="icon fa fa-warning"></i> {{ error|escape }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+
+        <div class='row'>
+
+            {% if all_view %}
+
+                <div class='col-lg-2'>
+                    <label>Account</label>
+                    {{ form.tran_account }}
+                </div>
+
+                <div class='col-lg-2'>
+                    <label>Date</label>
+                    <div class="input-group date"> <div class="input-group-addon"> <i class="fa fa-calendar"></i> </div>
+                        {{ form.tran_date }}
+                    </div>
+                </div>
+
+                <div class='col-lg-2'>
+                    <label>Payee</label>
+                    {{ form.tran_payee }}
+                </div>
+
+                <div class='col-lg-2'>
+                    <label>Category</label>
+                    {{ form.tran_category }}
+                    </div>
+
+                <div class='col-lg-2'>
+                    <label>Memo</label>
+                    {{ form.tran_memo }}
+                </div>
+
+                 <div class='col-lg-1'>
+                    <label>Outflow</label>
+                    {{ form.tran_outflow }}
+                </div>
+
+                 <div class='col-lg-1 '>
+                    <label>Inflow</label>
+                    {{ form.tran_inflow }}
+                </div>
+
+            {% else %}
+
+{#                <div class='col-lg-2'>#}
+{#                    <label>Account</label>#}
+{#                    {{ form.tran_account }}#}
+{#                </div>#}
+
+                <div class='col-lg-2'>
+                    <label>Date</label>
+                    <div class="input-group date"> <div class="input-group-addon"> <i class="fa fa-calendar"></i> </div>
+                        {{ form.tran_date }}
+                    </div>
+                </div>
+
+                <div class='col-lg-3'>
+                    <label>Payee</label>
+                    {{ form.tran_payee }}
+                </div>
+
+                <div class='col-lg-2'>
+                    <label>Category</label>
+                    {{ form.tran_category }}
+                    </div>
+
+                <div class='col-lg-3'>
+                    <label>Memo</label>
+                    {{ form.tran_memo }}
+                </div>
+
+                 <div class='col-lg-1'>
+                    <label>Outflow</label>
+                    {{ form.tran_outflow }}
+                </div>
+
+                 <div class='col-lg-1 '>
+                    <label>Inflow</label>
+                    {{ form.tran_inflow }}
+                </div>
+
+            {% endif %}
+
+
+            <div class='col-lg-1 hidden '>
+                <button type="submit" class="btn btn-success btn-xs" value='TransactionAdd' name="TransactionAdd" title="Add New Transaction"><i class="fa fa-plus">&nbsp;&nbsp;Add New Transaction</i></button>
+            </div>
+
+        </div>
+
+    </div>
+</form>

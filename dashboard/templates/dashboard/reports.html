@@ -1,0 +1,199 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+
+{% block title %} Reports {% endblock %}
+
+{% block reports_active %} active {% endblock %}
+
+{% block accounts-sidebar %}
+    {% include 'dashboard/accounts_sidebar.html' %}
+{% endblock %}
+
+
+
+{% block page-content %}
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <a href="" id="daterangetransactions_report" class="hidden">
+                <span><i class="fa fa-eye"></i></span>
+            </a>
+            <a type="button" class="btn btn-lg btn-success" id="daterange-reports-btn"><span>{{ tran_range }}</span> &nbsp; &nbsp;<i class="fa fa-caret-down"></i></a>
+            </div>
+        <hr/>
+    </div>
+    <hr/>
+
+    <div class="row">
+        <div class="col-lg-6">
+        <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Spending by Category: Total = <strong>$ {{ CATEGORY_TOTAL|intcomma }}</strong></h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i> </button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                  <div class="chart-responsive">
+                    <canvas id="pieChartCategory" height="500"></canvas>
+                  </div>
+                  <!-- ./chart-responsive -->
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+        <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Spending by Payee: Total = <strong>$ {{ PAYEE_TOTAL|intcomma }}</strong></h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i> </button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                  <div class="chart-responsive">
+                    <canvas id="pieChartPayee" height="500"></canvas>
+                  </div>
+                  <!-- ./chart-responsive -->
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+
+
+
+{% block table-edit-content %}
+
+
+
+
+<script>
+
+    //- PIE CHART SPENDING BY CATEGORY
+    var pieChartCanvasCategory = $("#pieChartCategory").get(0).getContext("2d");
+    var pieChartCategory = new Chart(pieChartCanvasCategory);
+    var PieDataCategory = [
+        {% for c, val in CATEGORY_REPORTS.items %}
+            {
+            value: {{ val.amount|safe }},
+            color: '{{ val.colour|safe }}',
+            label: "{{ c|safe }}"
+          },
+        {% endfor %}
+
+    ];
+    var pieOptionsCategory = {
+      //Boolean - Whether we should show a stroke on each segment
+      segmentShowStroke: true,
+      //String - The colour of each segment stroke
+      segmentStrokeColor: "#fff",
+      //Number - The width of each segment stroke
+      segmentStrokeWidth: 2,
+      //Number - The percentage of the chart that we cut out of the middle
+      percentageInnerCutout: 50, // This is 0 for Pie charts
+      //Number - Amount of animation steps
+      animationSteps: 100,
+      //String - Animation easing effect
+      animationEasing: "easeOutBounce",
+      //Boolean - Whether we animate the rotation of the Doughnut
+      animateRotate: true,
+      //Boolean - Whether we animate scaling the Doughnut from the centre
+      animateScale: true,
+      //Boolean - whether to make the chart responsive to window resizing
+      responsive: true,
+      // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+      maintainAspectRatio: false,
+      // Show tooltip on load
+{#      tooltipTemplate: "<%= label %>"+': '+"<%= value %>",#}
+{#      onAnimationComplete: function() { this.showTooltip(this.segments, true); },#}
+{#      tooltipEvents: [],#}
+{#      showTooltips: true#}
+    };
+    //Create doughnut chart
+    pieChartCategory.Doughnut(PieDataCategory, pieOptionsCategory);
+
+
+    //- PIE CHART SPENDING BY PAYEE
+    var pieChartCanvasPayee = $("#pieChartPayee").get(0).getContext("2d");
+    var pieChartPayee = new Chart(pieChartCanvasPayee);
+    var PieDataPayee = [
+        {% for c, val in PAYEE_REPORTS.items %}
+            {
+            value: {{ val.amount|safe }},
+            color: '{{ val.colour|safe }}',
+            label: "{{ c|safe }}"
+          },
+        {% endfor %}
+    ];
+    var pieOptionsPayee = {
+      //Boolean - Whether we should show a stroke on each segment
+      segmentShowStroke: true,
+      //String - The colour of each segment stroke
+      segmentStrokeColor: "#fff",
+      //Number - The width of each segment stroke
+      segmentStrokeWidth: 2,
+      //Number - The percentage of the chart that we cut out of the middle
+      percentageInnerCutout: 50, // This is 0 for Pie charts
+      //Number - Amount of animation steps
+      animationSteps: 100,
+      //String - Animation easing effect
+      animationEasing: "easeOutBounce",
+      //Boolean - Whether we animate the rotation of the Doughnut
+      animateRotate: true,
+      //Boolean - Whether we animate scaling the Doughnut from the centre
+      animateScale: false,
+      //Boolean - whether to make the chart responsive to window resizing
+      responsive: true,
+      // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+      maintainAspectRatio: false,
+      // Show tooltip on load
+{#      tooltipTemplate: "<%= label %>"+': '+"<%= value %>",#}
+{#      onAnimationComplete: function() { this.showTooltip(this.segments, true); },#}
+{#      tooltipEvents: [],#}
+{#      showTooltips: true#}
+    };
+    //Create doughnut chart
+    pieChartPayee.Doughnut(PieDataPayee, pieOptionsPayee);
+
+
+
+      //Date range as a button
+    $('#daterange-reports-btn').daterangepicker(
+        {
+          ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          },
+
+          startDate: '{{ start_date|safe }}',
+          endDate: '{{ end_date|safe }}'
+        },
+        function (start, end) {
+            var range = start.format('MMMM DD, YYYY') + ' - ' + end.format('MMMM DD, YYYY');
+            var to_pass = start.format('MM/DD/YYYY') + ':' + end.format('MM/DD/YYYY');
+          $('#daterange-reports-btn span').html(range);
+
+            $('#daterangetransactions_report').attr('href', '/reports/'+to_pass);
+
+            $('#daterangetransactions_report span').trigger('click');
+
+        }
+
+    );
+
+
+</script>
+
+{% endblock %}

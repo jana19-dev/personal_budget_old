@@ -1,0 +1,14 @@
+
+<select id="categoryDropdown" class=" btn btn-success">
+    <option value="All" >All Categories</option>
+    {% for c in ALL_CATEGORIES %}
+        {% if c.cat_name == cat_name %}
+            <option value="{{ c.cat_name }}" selected="{{ c.cat_name }}">{{ c.cat_name }}</option>
+        {% else %}
+            <option value="{{ c.cat_name }}">{{ c.cat_name }}</option>
+        {% endif %}
+    {% endfor %}
+</select>
+
+
+

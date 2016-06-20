@@ -1,0 +1,218 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+
+{% block title %} Transactions {% endblock %}
+
+{% block transactions_active %} active {% endblock %}
+
+
+
+
+{% block accounts-sidebar %}
+    {% include 'dashboard/accounts_sidebar.html' %}
+{% endblock %}
+
+
+
+
+{% block page-content %}
+    <a href="" id="daterangetransactions" class="hidden">
+        <span><i class="fa fa-eye"></i></span>
+    </a>
+
+
+
+<div class="row">
+
+    <div class="col-lg-12">
+        <div class="alert alert-danger alert-dismissible hidden" id="tran_errors">
+            <i class="icon fa fa-ban"></i><span id="tran_err_msg"> </span>
+        </div>
+        <div class="alert alert-success alert-dismissible hidden" id="tran_success">
+            <i class="icon fa fa-check"></i><span id="tran_suc_msg"> </span>
+        </div>
+
+        {% include 'dashboard/add_transaction.html' %}
+
+        <div class="box box-info">
+            {% if acc_name %}
+                <h4 class="box-title">&nbsp; Showing <strong>{{ COUNT }}</strong> Transactions in <strong>&nbsp;{{ acc_name }}&nbsp;</strong> from &nbsp;
+                    <a type="button" class="btn btn-md btn-success" id="daterange-btn"><span>{{ tran_range }}</span> &nbsp; &nbsp;<i class="fa fa-caret-down"></i></a>
+                    &nbsp; in  {% include 'dashboard/dropdown_category.html' %}
+                     <span class="pull-right">Outflows: ${{ TOTAL_OUTFLOWS|intcomma }}&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Inflows: ${{ TOTAL_INFLOWS|intcomma }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </h4>
+            {% elif category %}
+                <h4 class="box-title">&nbsp; Showing <strong>{{ COUNT }}</strong> Transactions from &nbsp;
+                    <a type="button" class="btn btn-md btn-success" id="daterange-btn"><span>{{ tran_range }}</span> &nbsp; &nbsp;<i class="fa fa-caret-down"></i></a>
+                    &nbsp; in  {% include 'dashboard/dropdown_category.html' %}
+                     <span class="pull-right">Outflows: ${{ TOTAL_OUTFLOWS|intcomma }}&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Inflows: ${{ TOTAL_INFLOWS|intcomma }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </h4>
+            {% else %}
+                <h4 class="box-title">&nbsp; Showing <strong>{{ COUNT }}</strong> Transactions from &nbsp;
+                    <a type="button" class="btn btn-md btn-success" id="daterange-btn"><span>{{ tran_range }}</span> &nbsp; &nbsp;<i class="fa fa-caret-down"></i></a>
+                    &nbsp; in  {% include 'dashboard/dropdown_category.html' %}
+                     <span class="pull-right">Outflows: ${{ TOTAL_OUTFLOWS|intcomma }}&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Inflows: ${{ TOTAL_INFLOWS|intcomma }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </h4>
+            {% endif %}
+
+            <div class="box-body">
+                <table id="editTran" class="table table-hover table-condensed  table-bordered">
+                     <thead>
+                        <tr>
+                            <th style="display: none;" width="0%">#</th>
+                            {% if acc_view %}
+                                <th style="display: none;" width="0%">Account</th>
+                            {% else %}
+                                <th style="text-align: center" width="15%">Account</th>
+                            {% endif %}
+                            <th style="text-align: center" width="10%">Date</th>
+                            <th style="text-align: center" width="20%">Payee</th>
+                            <th style="text-align: center" width="15%">Category</th>
+                            <th style="text-align: center" width="20%">Memo</th>
+                            <th style="text-align: center" width="10%">Outflow</th>
+                            <th style="text-align: center" width="10%">Inflow</th>
+                        </tr>
+                    </thead>
+                    {% if ALL_TRANSACTIONS %}
+                    <tbody>
+                        {% for transaction in ALL_TRANSACTIONS %}
+                           <tr>
+                               <td style="display: none;" width="0%">{{ transaction.pk }}</td>
+                               {% if acc_view %}
+                                    <td style="display: none;" width="0%">{{ transaction.tran_account }}</td>
+                               {% else %}
+                                    <td style="text-align: left; vertical-align: middle;" width="15%">{{ transaction.tran_account }}</td>
+                               {% endif %}
+                               <td style="text-align: left; vertical-align: middle;" width="10%">{{ transaction.print_date }}</td>
+                               <td style="text-align: left; vertical-align: middle;" width="20%">{{ transaction.tran_payee }}</td>
+                               {% if transaction.tran_category.cat_name == 'DELETED' %}
+                                    <td style="text-align: center; vertical-align: middle;" class="text-danger" width="15%"> No Category !</td>
+                               {% else %}
+                                    <td style="text-align: left; vertical-align: middle;" width="15%">{{ transaction.tran_category }}</td>
+                               {% endif %}
+                               <td style="text-align: left; vertical-align: middle;" width="20%">{{ transaction.tran_memo }}</td>
+                               <td style="text-align: right; vertical-align: middle;" width="10%">{{ transaction.tran_outflow|intcomma }}</td>
+                               <td style="text-align: right; vertical-align: middle;" width="10%">{{ transaction.tran_inflow|intcomma }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+
+    </div>  <!-- end col -->
+</div>  <!-- end row -->
+
+{% endblock %}
+
+{% block datepicker-content %}
+
+    <script >
+        //Date picker
+        $("#datepicker").datepicker( {
+            autoclose: true
+        });
+
+
+      //Date range as a button
+    $('#daterange-btn').daterangepicker(
+        {
+          ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          },
+
+          startDate: '{{ start_date|safe }}',
+          endDate: '{{ end_date|safe }}'
+        },
+        function (start, end) {
+            var range = start.format('MMMM DD, YYYY') + ' - ' + end.format('MMMM DD, YYYY');
+            var to_pass = start.format('MM/DD/YYYY') + ':' + end.format('MM/DD/YYYY');
+          $('#daterange-btn span').html(range);
+            {% if acc_view %}
+                $('#daterangetransactions').attr('href', '/'+to_pass+'/{{ acc_name }}/{{ cat_name }}');
+            {% else %}
+                $('#daterangetransactions').attr('href', '/'+to_pass+'//{{ cat_name }}');
+            {% endif %}
+
+            $('#daterangetransactions span').trigger('click');
+
+        }
+
+    );
+
+    </script>
+
+ {% endblock %}
+
+
+
+{% block table-edit-content %}
+    <script>
+            $('#editTran').Tabledit({
+            url: '{% url "dashboard:edit_transaction" %}',
+            editButton: false,
+            hideIdentifier: true,
+            restoreButton: false,
+            columns: {
+                identifier: [0, 'id'],
+                {% if acc_view %}
+                editable: [[2, 'tran_date'], [3, 'tran_payee'], [4, 'tran_category', '{{ categories_dropdown_dict|safe }}'], [5, 'tran_memo'], [6, 'tran_outflow'], [7, 'tran_inflow']],
+                {% else %}
+                editable: [[1, 'tran_account', '{{ accounts_dropdown_dict|safe }}'], [2, 'tran_date'], [3, 'tran_payee'], [4, 'tran_category', '{{ categories_dropdown_dict|safe }}'], [5, 'tran_memo'], [6, 'tran_outflow'], [7, 'tran_inflow']],
+                {% endif %}
+            },
+            buttons: {
+                delete: {
+                    class: 'btn btn-sm btn-danger',
+                    html: '<span class="glyphicon glyphicon-trash"></span>',
+                    action: 'delete'
+                },
+                confirm: {
+                    class: 'btn btn-sm btn-info',
+                    html: 'Are you sure?'
+                }
+            },
+            onSuccess: function(data) {
+                if (data['nothing']){
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#tran_errors').addClass('hidden');
+                    }
+                else {
+                    if (data['error']) {
+                        $('#'+data['id']).addClass('danger').addClass('text-danger');
+                        $('#tran_errors').removeClass('hidden');
+                        $('#tran_err_msg').text(data['error']);
+                    } else {
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#tran_errors').addClass('hidden');
+                        window.location.replace('');
+                    }
+                }
+            },
+        });
+
+
+    $('#categoryDropdown').change(function(e){
+        var to_pass = $('#categoryDropdown').val();
+        console.log(to_pass);
+        if ('{{ cat_name|safe }}' != to_pass) {
+            {% if acc_view %}
+                window.location.replace('/{{ tran_range_for_budget }}/{{ acc_name }}/'+to_pass);
+            {% else %}
+                window.location.replace('/{{ tran_range_for_budget }}//'+to_pass);
+            {% endif %}
+        }
+
+     }).change();
+
+    </script>
+
+{% endblock %}
+
+

@@ -1,0 +1,519 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+
+{% block title %} Budget {% endblock %}
+
+{% block budget_active %}active{% endblock %}
+
+{% block accounts-sidebar %}
+    {% include 'dashboard/accounts_sidebar.html' %}
+{% endblock %}
+
+{% block page-content %}
+
+<div class="row">
+    <div class="col-lg-3 text-center">
+        <div class="col-lg-12 text-bold"> {{ prev_month_from }} &nbsp; to &nbsp;{{ next_month_from }} &nbsp;<i class="fa fa-eye"></i>
+            <div class="col-lg-10 col-lg-offset-1">
+                <div class="input-group date"><div class="input-group-addon"><i class="fa fa-calendar"></i> </div>
+                    <input class="form-control " id="datepicker" name="acc_date_open" type="text" value="{{ current_month_from }}" required />
+                </div>
+            </div>
+        </div>
+
+        <a href="" id="daterangelink" class="hidden">
+            <span><i class="fa fa-eye"></i></span>
+        </a>
+
+        <div class="inner"><h2>&nbsp;</h2></div>
+        {% include 'dashboard/add_category.html' %}
+        <div class="inner"><h4>&nbsp;</h4><br><br></div>
+
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="alert alert-danger alert-dismissible hidden" id="acc_errors">
+                    <i class="icon fa fa-ban"></i><span id="acc_err_msg"> </span>
+                </div>
+                <div class="alert alert-success alert-dismissible hidden" id="acc_success">
+                    <i class="icon fa fa-check"></i><span id="acc_suc_msg"> </span>
+                </div>
+
+                <table id="editCategory" class="table table-hover table-condensed table-bordered">
+                     <thead>
+                        <tr>
+                            <th>#</th>
+                            <th style="text-align: center;" width="100%"><br/>Categories</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in ALL_CATEGORIES %}
+                           <tr>
+                               <td>{{ category.pk }}</td>
+                               <td style="text-align: left; vertical-align: middle;" width="100%">{{ category.cat_name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREVIOUS BUDGET -->
+    <div class="col-lg-3">
+    {% if prev_month_available_to_budget >= 0 %}
+        <div class="small-box bg-green">
+    {% else %}
+        <div class="small-box bg-red">
+    {% endif %}
+            <div class="inner">
+                {% if prev_month_available_to_budget >= 0 %}
+                    Available To Budget <span class="pull-right text-bold">{{ prev_month_from }}</span>
+                    <h3>$&nbsp;{{ prev_month_available_to_budget|intcomma }}<i class="fa fa-smile-o pull-right"></i></h3>
+                {% else %}
+                    Overbudgeted <span class="pull-right text-bold">{{ prev_month_from }}</span>
+                    <h3>$&nbsp;{{ prev_month_available_to_budget|intcomma }}<i class="fa fa-frown-o pull-right"></i></h3>
+                {% endif %}
+
+                {% if prev_prev_month_not_or_over_budgeted >= 0 %}
+                    Not Budgeted Last Month <span class="pull-right">$&nbsp;{{ prev_prev_month_not_or_over_budgeted|intcomma }}</span> <br/>
+                {% else %}
+                    Over Budgeted Last Month <span class="pull-right">$&nbsp;{{ prev_prev_month_not_or_over_budgeted|intcomma }}</span> <br/>
+                {% endif %}
+                Overspent In Last Month <span class="pull-right">$&nbsp;{{ overspent_prev_prev_month|intcomma }}</span> <br/>
+                Income During This Month <span class="pull-right">$&nbsp;{{ income_for_prev_month|intcomma }}</span> <br/>
+            </div>
+        </div>
+
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="alert alert-danger alert-dismissible hidden" id="prev_errors">
+                    <i class="icon fa fa-ban"></i><span id="prev_err_msg"> </span>
+                </div>
+                <div class="alert alert-success alert-dismissible hidden" id="acc_success">
+                    <i class="icon fa fa-check"></i><span id="acc_suc_msg"> </span>
+                </div>
+                <table id="editBudgetPrev" class="table table-hover table-condensed table-bordered">
+                     <thead>
+                        <tr>
+                            <th>#</th>
+                            <th style="text-align: center" width="33%"><span class="text-purple">$&nbsp;{{ budgeted_for_prev_month|intcomma }}</span><br/>Budgeted</th>
+                            <th style="text-align: center" width="33%"><span class="text-blue">$&nbsp;{{ outflows_for_prev_month|intcomma }}</span><br/>Outflows</th>
+                            <th style="text-align: center" width="33%"><span class="text-green">$&nbsp;{{ balance_for_prev_month|intcomma }}</span><br/>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in ALL_PREV_BUDGETS %}
+                           <tr height="41px">
+                               <td>{{ b.pk }}</td>
+                               <td style="text-align: right; vertical-align: middle;" width="33%" class="text-purple">{{ b.bud_budgeted|intcomma }}</td>
+                               <td style="text-align: right; vertical-align: middle;" width="33%" class="text-blue"><a href="" data-toggle="modal" data-target="#budget_id_{{ b.pk }}">{{ b.bud_outflows|intcomma }}</a> </td>
+                               {% if b.bud_balance >= 0 %}
+                                    <td style="text-align: right; vertical-align: middle;" width="33%" class="text-green text-bold">{{ b.bud_balance|intcomma }}</td>
+                               {% else %}
+                                    <td style="text-align: right; vertical-align: middle;" width="33%" class="text-red text-bold">{{ b.bud_balance|intcomma }}</td>
+                               {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>  <!-- PREVIOUS BUDGET -->
+
+
+    <!-- CURRENT BUDGET -->
+    <div class="col-lg-3">
+    {% if curr_month_available_to_budget >= 0 %}
+        <div class="small-box bg-green">
+    {% else %}
+        <div class="small-box bg-red">
+    {% endif %}
+            <div class="inner">
+                {% if curr_month_available_to_budget >= 0 %}
+                    Available To Budget <span class="pull-right text-bold">{{ current_month_from }}</span>
+                    <h3>$&nbsp;{{ curr_month_available_to_budget|intcomma }}<i class="fa fa-smile-o pull-right"></i></h3>
+                {% else %}
+                    Overbudgeted <span class="pull-right text-bold">{{ current_month_from }}</span>
+                    <h3>$&nbsp;{{ curr_month_available_to_budget|intcomma }}<i class="fa fa-frown-o pull-right"></i></h3>
+                {% endif %}
+
+                {% if prev_month_not_or_over_budgeted >= 0 %}
+                    Not Budgeted Last Month <span class="pull-right">$&nbsp;{{ prev_month_not_or_over_budgeted|intcomma }}</span> <br/>
+                {% else %}
+                    Over Budgeted Last Month <span class="pull-right">$&nbsp;{{ prev_month_not_or_over_budgeted|intcomma }}</span> <br/>
+                {% endif %}
+                Overspent In Last Month <span class="pull-right">$&nbsp;{{ overspent_prev_month|intcomma }}</span> <br/>
+                Income During This Month <span class="pull-right">$&nbsp;{{ income_for_curr_month|intcomma }}</span> <br/>
+            </div>
+        </div>
+
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="alert alert-danger alert-dismissible hidden" id="curr_errors">
+                    <i class="icon fa fa-ban"></i><span id="curr_err_msg"> </span>
+                </div>
+                <div class="alert alert-success alert-dismissible hidden" id="acc_success">
+                    <i class="icon fa fa-check"></i><span id="acc_suc_msg"> </span>
+                </div>
+                <table id="editBudgetCurr" class="table table-hover table-condensed table-bordered">
+                     <thead>
+                        <tr>
+                            <th>#</th>
+                            <th style="text-align: center" width="33%"><span class="text-purple">$&nbsp;{{ budgeted_for_curr_month|intcomma }}</span><br/>Budgeted</th>
+                            <th style="text-align: center" width="33%"><span class="text-blue">$&nbsp;{{ outflows_for_curr_month|intcomma }}</span><br/>Outflows</th>
+                            <th style="text-align: center" width="33%"><span class="text-green">$&nbsp;{{ balance_for_curr_month|intcomma }}</span><br/>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in ALL_CURR_BUDGETS %}
+                           <tr height="41px">
+                               <td>{{ b.pk }}</td>
+                               <td style="text-align: right; vertical-align: middle;" width="33%" class="text-purple">{{ b.bud_budgeted|intcomma }}</td>
+                               <td style="text-align: right; vertical-align: middle;" width="33%" class="text-blue"><a href="" data-toggle="modal" data-target="#budget_id_{{ b.pk }}">{{ b.bud_outflows|intcomma }}</a> </td>
+                               {% if b.bud_balance >= 0 %}
+                                    <td style="text-align: right; vertical-align: middle;" width="33%" class="text-green text-bold">{{ b.bud_balance|intcomma }}</td>
+                               {% else %}
+                                    <td style="text-align: right; vertical-align: middle;" width="33%" class="text-red text-bold">{{ b.bud_balance|intcomma }}</td>
+                               {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- CURRENT BUDGET -->
+
+
+    <!-- NEXT BUDGET -->
+    <div class="col-lg-3">
+    {% if next_month_available_to_budget >= 0 %}
+        <div class="small-box bg-green">
+    {% else %}
+        <div class="small-box bg-red">
+    {% endif %}
+            <div class="inner">
+                {% if next_month_available_to_budget >= 0 %}
+                    Available To Budget <span class="pull-right text-bold">{{ next_month_from }}</span>
+                    <h3>$&nbsp;{{ next_month_available_to_budget|intcomma }}<i class="fa fa-smile-o pull-right"></i></h3>
+                {% else %}
+                    Overbudgeted <span class="pull-right text-bold">{{ next_month_from }}</span>
+                    <h3>$&nbsp;{{ next_month_available_to_budget|intcomma }}<i class="fa fa-frown-o pull-right"></i></h3>
+                {% endif %}
+
+                {% if curr_month_not_or_over_budgeted >= 0 %}
+                    Not Budgeted Last Month <span class="pull-right">$&nbsp;{{ curr_month_not_or_over_budgeted|intcomma }}</span> <br/>
+                {% else %}
+                    Over Budgeted Last Month <span class="pull-right">$&nbsp;{{ curr_month_not_or_over_budgeted|intcomma }}</span> <br/>
+                {% endif %}
+                Overspent In Last Month <span class="pull-right">$&nbsp;{{ overspent_curr_month|intcomma }}</span> <br/>
+                Income During This Month <span class="pull-right">$&nbsp;{{ income_for_next_month|intcomma }}</span> <br/>
+            </div>
+        </div>
+
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="alert alert-danger alert-dismissible hidden" id="next_errors">
+                    <i class="icon fa fa-ban"></i><span id="next_err_msg"> </span>
+                </div>
+                <div class="alert alert-success alert-dismissible hidden" id="acc_success">
+                    <i class="icon fa fa-check"></i><span id="acc_suc_msg"> </span>
+                </div>
+                <table id="editBudgetNext" class="table table-hover table-condensed table-bordered">
+                     <thead>
+                        <tr>
+                            <th>#</th>
+                            <th style="text-align: center" width="33%"><span class="text-purple">$&nbsp;{{ budgeted_for_next_month|intcomma }}</span><br/>Budgeted</th>
+                            <th style="text-align: center" width="33%"><span class="text-blue">$&nbsp;{{ outflows_for_next_month|intcomma }}</span><br/>Outflows</th>
+                            <th style="text-align: center" width="33%"><span class="text-green">$&nbsp;{{ balance_for_next_month|intcomma }}</span><br/>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in ALL_NEXT_BUDGETS %}
+                           <tr height="41px">
+                               <td>{{ b.pk }}</td>
+                               <td style="text-align: right; vertical-align: middle;" width="33%" class="text-purple">{{ b.bud_budgeted|intcomma }}</td>
+                               <td style="text-align: right; vertical-align: middle;" width="33%" class="text-blue"><a href="" data-toggle="modal" data-target="#budget_id_{{ b.pk }}">{{ b.bud_outflows|intcomma }}</a> </td>
+                               {% if b.bud_balance >= 0 %}
+                                    <td style="text-align: right; vertical-align: middle;" width="33%" class="text-green text-bold">{{ b.bud_balance|intcomma }}</td>
+                               {% else %}
+                                    <td style="text-align: right; vertical-align: middle;" width="33%" class="text-red text-bold">{{ b.bud_balance|intcomma }}</td>
+                               {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- NEXT BUDGET -->
+
+
+</div>
+
+{% for b in ALL_PREV_BUDGETS %}
+    <!-- Modal -->
+    <div id="budget_id_{{ b.pk }}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{ b.bud_category }}</h4>
+          </div>
+          <div class="modal-body">
+                <table class="table table-hover table-condensed table-bordered">
+                     <thead style="text-align: center;">
+                        <tr>
+                            <th style="text-align: center;">Date</th>
+                            <th style="text-align: center;">Account</th>
+                            <th style="text-align: center;">Payee</th>
+                            <th style="text-align: center;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ b.print_transactions_table_body }}
+                    </tbody>
+                </table>
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-success" href="/{{ b }}">View Transactions</a>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+
+
+{% for b in ALL_CURR_BUDGETS %}
+    <!-- Modal -->
+    <div id="budget_id_{{ b.pk }}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{ b.bud_category }}</h4>
+          </div>
+          <div class="modal-body">
+                <table class="table table-hover table-condensed table-bordered">
+                     <thead>
+                        <tr>
+                            <th style="text-align: center;">Date</th>
+                            <th style="text-align: center;">Account</th>
+                            <th style="text-align: center;">Payee</th>
+                            <th style="text-align: center;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ b.print_transactions_table_body|safe }}
+                    </tbody>
+                </table>
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-success" href="/{{ b }}">View Transactions</a>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+
+
+{% for b in ALL_NEXT_BUDGETS %}
+    <!-- Modal -->
+    <div id="budget_id_{{ b.pk }}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{ b.bud_category }}</h4>
+          </div>
+          <div class="modal-body">
+                <table class="table table-hover table-condensed table-bordered">
+                     <thead>
+                        <tr>
+                            <th style="text-align: center;">Date</th>
+                            <th style="text-align: center;">Account</th>
+                            <th style="text-align: center;">Payee</th>
+                            <th style="text-align: center;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ b.print_transactions_table_body }}
+                    </tbody>
+                </table>
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-success" href="/{{ b }}">View Transactions</a>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+
+{% endblock %}
+
+{% block datepicker-content %}
+
+    <script >
+        $("#datepicker").datepicker( {
+            format: "mm/yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true
+        });
+        //Date picker
+
+        $("#datepicker").on('changeDate', function(ev){
+            var to_pass = $(this).val();
+            $('#daterangelink').attr('href', '/budget/'+to_pass);
+            $('#daterangelink span').trigger('click');
+        })
+
+
+
+
+    </script>
+
+{% endblock %}
+
+
+
+{% block table-edit-content %}
+<script>
+$('#editCategory').Tabledit({
+            url: 'edit_category_name/',
+            editButton: false,
+            hideIdentifier: true,
+            restoreButton: false,
+            deleteButton: true,
+            columns: {
+                identifier: [0, 'id'],
+                editable: [[1, 'cat_name']]
+            },
+            buttons: {
+                delete: {
+                    class: 'btn btn-sm btn-danger',
+                    html: '<span class="glyphicon glyphicon-trash"></span>',
+                    action: 'delete'
+                },
+                confirm: {
+                    class: 'btn btn-sm btn-info',
+                    html: 'Are you sure?'
+                }
+            },
+            onSuccess: function(data) {
+                if (data['nothing']){
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#tran_errors').addClass('hidden');
+                    }
+                else {
+                    if (data['error']) {
+                        $('#'+data['id']).addClass('danger').addClass('text-danger');
+                        $('#acc_errors').removeClass('hidden');
+                        $('#acc_err_msg').text(data['error']);
+                    } else {
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#acc_errors').addClass('hidden');
+                        window.location.replace('/budget/');
+                    }
+                }
+            },
+        });
+
+
+
+    $('#editBudgetPrev').Tabledit({
+            url: '{% url "dashboard:editBudget" %}',
+            editButton: false,
+            hideIdentifier: true,
+            restoreButton: false,
+            deleteButton: false,
+            columns: {
+                identifier: [0, 'id'],
+                editable: [[1, 'bud_budgeted']]
+            },
+            onSuccess: function(data) {
+                if (data['nothing']){
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#prev_errors').addClass('hidden');
+                    }
+                else {
+                    if (data['error']) {
+                        $('#'+data['id']).addClass('danger').addClass('text-danger');
+                        $('#prev_errors').removeClass('hidden');
+                        $('#prev_err_msg').text(data['error']);
+                    } else {
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#prev_errors').addClass('hidden');
+                        window.location.replace('/budget/');
+                    }
+                }
+            },
+        });
+
+    $('#editBudgetCurr').Tabledit({
+            url: '{% url "dashboard:editBudget" %}',
+            editButton: false,
+            hideIdentifier: true,
+            restoreButton: false,
+            deleteButton: false,
+            columns: {
+                identifier: [0, 'id'],
+                editable: [[1, 'bud_budgeted']]
+            },
+            onSuccess: function(data) {
+                if (data['nothing']){
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#curr_errors').addClass('hidden');
+                    }
+                else {
+                    if (data['error']) {
+                        $('#'+data['id']).addClass('danger').addClass('text-danger');
+                        $('#curr_errors').removeClass('hidden');
+                        $('#curr_err_msg').text(data['error']);
+                    } else {
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#curr_errors').addClass('hidden');
+                        window.location.replace('/budget/');
+                    }
+                }
+            },
+        });
+
+    $('#editBudgetNext').Tabledit({
+            url: '{% url "dashboard:editBudget" %}',
+            editButton: false,
+            hideIdentifier: true,
+            restoreButton: false,
+            deleteButton: false,
+            columns: {
+                identifier: [0, 'id'],
+                editable: [[1, 'bud_budgeted']]
+            },
+            onSuccess: function(data) {
+                if (data['nothing']){
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#next_errors').addClass('hidden');
+                    }
+                else {
+                    if (data['error']) {
+                        $('#'+data['id']).addClass('danger').addClass('text-danger');
+                        $('#next_errors').removeClass('hidden');
+                        $('#next_err_msg').text(data['error']);
+                    } else {
+                        $('#'+data['id']).removeClass('danger').removeClass('text-danger');
+                        $('#next_errors').addClass('hidden');
+                        window.location.replace('/budget/');
+                    }
+                }
+            },
+        });
+
+
+
+</script>
+
+{% endblock %}
