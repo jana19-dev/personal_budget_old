@@ -1083,7 +1083,7 @@ def _get_outflows_cat_in_date_range(request, cat_obj, from_date, to_date):
 
 
 def _get_budgets_in_range(request, from_date, to_date):
-    return Budget.objects.filter(bud_user=request.user).filter(bud_date__range=[from_date, to_date])
+    return Budget.objects.filter(bud_user=request.user).filter(bud_date__range=[from_date, to_date]).order_by('bud_category__cat_name')
 
 
 def _get_curr_month_range(date_range):
