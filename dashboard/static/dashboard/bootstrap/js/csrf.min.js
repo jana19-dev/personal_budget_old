@@ -1,0 +1,1 @@
+function getCookie(e){var o=null;if(document.cookie&&""!=document.cookie)for(var t=document.cookie.split(";"),n=0;n<t.length;n++){var r=jQuery.trim(t[n]);if(r.substring(0,e.length+1)==e+"="){o=decodeURIComponent(r.substring(e.length+1));break}}return o}var csrftoken=getCookie("csrftoken");
