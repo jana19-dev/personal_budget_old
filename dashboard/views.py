@@ -835,7 +835,7 @@ def budget(request, date_range=None):
 
     # List all categories and display a blank form to add new category
     ALL_CATEGORIES = Category.objects.filter(cat_user=request.user).exclude(cat_name='DELETED').exclude(
-        cat_name='TRANSFER').exclude(cat_name='INCOME')
+        cat_name='TRANSFER').exclude(cat_name='INCOME').order_by('cat_name')
     context['ALL_CATEGORIES'] = ALL_CATEGORIES
     cat_form = CategoryForm(None)
     context['cat_form'] = cat_form
