@@ -7,3 +7,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
 ]
+
+handler404 = 'dashboard.views.custom_404'
+handler500 = 'dashboard.views.custom_500'
+handler400 = 'dashboard.views.custom_400'
