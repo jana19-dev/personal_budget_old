@@ -61,7 +61,6 @@ img {
 }
 /*-- //Reset Code --*/
 .main{
-background:url('../images/4.png') no-repeat 0px 0px;
 background-size:cover;
 min-height:799px;
 }
@@ -107,13 +106,11 @@ min-height:799px;
     display: inline-block;
     margin-top: 10px;
     font-size: 16px;
-    background: url('../images/arrow.png') no-repeat 97px 10px;
     background-size: 10%;
 }
 .right a:hover{
 	color:#b76b24;
 		border:2px solid #b76b24;
-		 background: url('../images/carrow.png') no-repeat 97px 10px;
 		   background-size: 10%;
 }
 .footer {
@@ -257,13 +254,11 @@ min-height:799px;
 }
 @media (max-width: 800px){
     .main {
-		background: url('../images/4.png') no-repeat -46px 0px;
 		background-size:cover;
 	}
 }
 @media (max-width: 768px){
     .main {
-		background: url('../images/4.png') no-repeat -354px 0px;
 		min-height: 929px;
 		background-size:cover;
 	}
@@ -287,7 +282,6 @@ min-height:799px;
 }
 @media (max-width: 736px){
 	.main {
-		background: url('../images/4.png') no-repeat -215px 0px;
 		min-height: 715px;
 		background-size: cover;
 	}
@@ -302,7 +296,6 @@ min-height:799px;
 }
 @media (max-width: 667px){
 	.main {
-		background: url('../images/4.png') no-repeat -143px 0px;
 		min-height: 586px;
 		background-size: cover;
 	}
@@ -319,14 +312,12 @@ min-height:799px;
 }
 @media (max-width: 600px){
 	.main {
-		background: url('../images/4.png') no-repeat -175px 0px;
 		min-height: 586px;
 		background-size: cover;
 	}
 }
 @media (max-width: 568px){
 	.main {
-		background: url('../images/4.png') no-repeat -184px 0px;
 		min-height: 565px;
 		background-size: cover;
 	}
@@ -345,7 +336,6 @@ min-height:799px;
 }
 @media (max-width: 480px){
 	.main {
-		background: url('../images/4.png') no-repeat -238px 0px;
 		min-height: 600px;
 		/*-- w3layouts --*/
 		background-size: cover;
@@ -360,7 +350,6 @@ min-height:799px;
 }
 @media (max-width: 414px){
 	.main {
-		background: url('../images/5.png') no-repeat -83px -79px;
 		background-size: 123%;
 		min-height: 672px;
 	}
@@ -392,14 +381,12 @@ min-height:799px;
 }
 @media (max-width: 384px){
 	.main {
-		background: url('../images/5.png') no-repeat -81px -79px;
 		background-size: 128%;
 		min-height: 672px;
 	}
 }
 @media (max-width: 375px){
 	.main {
-		background: url('../images/5.png') no-repeat -97px -129px;
 		min-height: 603px;
 		background-size: 136%;
 	}
@@ -431,7 +418,6 @@ min-height:799px;
 }
 @media (max-width: 320px){
 	.main {
-		background: url('../images/5.png') no-repeat -87px -110px;
 		background-size: 136%;
 		min-height: 503px;
 	}
