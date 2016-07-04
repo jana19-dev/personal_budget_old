@@ -270,7 +270,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{ b.print_transactions_table_body }}
+                        {{ b.print_transactions_table_body|safe }}
                     </tbody>
                 </table>
           </div>
@@ -340,7 +340,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{ b.print_transactions_table_body }}
+                        {{ b.print_transactions_table_body|safe }}
                     </tbody>
                 </table>
           </div>
